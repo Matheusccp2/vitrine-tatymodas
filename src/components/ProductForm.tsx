@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Upload } from "lucide-react";
 import {
   Dialog,
@@ -79,13 +79,70 @@ export function ProductForm({
     }
   };
 
-  /**
-   * Formata o preço enquanto o usuário digita
-   */
+  // No componente, adicione:
+  const inputRef = useRef<HTMLInputElement>(null);
+  const cursorPositionRef = useRef<number>(0);
+
   const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const formatted = formatPriceInput(e.target.value);
+    const input = e.target;
+    const cursorPosition = input.selectionStart || 0;
+    const previousValue = formData.price;
+
+    // Remove tudo exceto números
+    const numericValue = e.target.value.replace(/\D/g, "");
+
+    // Se estiver vazio, limpa o campo
+    if (!numericValue) {
+      setFormData({ ...formData, price: "" });
+      cursorPositionRef.current = 0;
+      return;
+    }
+
+    // Converte para número (centavos) e formata
+    const cents = parseInt(numericValue, 10);
+    const formatted = new Intl.NumberFormat("pt-BR", {
+      style: "currency",
+      currency: "BRL",
+    }).format(cents / 100);
+
+    // Conta dígitos antes do cursor no valor anterior
+    const previousDigits = previousValue
+      .slice(0, cursorPosition)
+      .replace(/\D/g, "");
+    const currentDigits = numericValue;
+
+    // Se deletou um dígito, ajusta a contagem
+    const digitsBeforeCursor =
+      previousDigits.length -
+      (previousValue.replace(/\D/g, "").length - currentDigits.length);
+
+    // Encontra a nova posição
+    let newPosition = 0;
+    let count = 0;
+
+    for (let i = 0; i < formatted.length; i++) {
+      if (/\d/.test(formatted[i])) {
+        count++;
+        if (count > digitsBeforeCursor) {
+          newPosition = i;
+          break;
+        }
+      }
+    }
+
+    cursorPositionRef.current = newPosition;
     setFormData({ ...formData, price: formatted });
   };
+
+  // useEffect para atualizar o cursor
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.setSelectionRange(
+        cursorPositionRef.current,
+        cursorPositionRef.current,
+      );
+    }
+  }, [formData.price]);
 
   /**
    * Submete o formulário
@@ -106,7 +163,7 @@ export function ProductForm({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-[500px]">
+      <DialogContent className="max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>
             {editingProduct ? "Editar Produto" : "Adicionar Novo Produto"}
@@ -191,7 +248,7 @@ export function ProductForm({
                 setFormData({ ...formData, description: e.target.value })
               }
               placeholder="Descreva o produto..."
-              className="flex min-h-[80px] w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm ring-offset-white placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-950 focus-visible:ring-offset-2"
+              className="flex w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm ring-offset-white placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-950 focus-visible:ring-offset-2"
               rows={3}
             />
           </div>
