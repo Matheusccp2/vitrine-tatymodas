@@ -1,4 +1,3 @@
-import * as React from "react";
 import { Badge } from "./badge";
 import { cn } from "@/utils/formatters";
 import { SelectOption } from "@/types";
