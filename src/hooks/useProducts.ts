@@ -34,27 +34,31 @@ export function useProducts() {
       // Converte preço de string para centavos
       const priceInCents = parsePriceToCents(formData.price);
 
-      // Cria o produto no Firestore (sem imagem ainda)
-      const productId = await productsService.addProduct({
+      // Converte imagem para Base64 (se houver)
+      let imageUrl = "";
+      if (formData.imageFile) {
+        // Valida a imagem
+        if (!storageService.isValidImage(formData.imageFile)) {
+          throw new Error(
+            "Imagem inválida. Use JPG, PNG ou WebP com no máximo 2MB",
+          );
+        }
+
+        // Comprime e converte para Base64
+        imageUrl = await storageService.compressAndConvertImage(
+          formData.imageFile,
+        );
+      }
+
+      // Cria o produto no Firestore
+      await productsService.addProduct({
         name: formData.name,
         category: formData.category,
         sizes: formData.sizes,
         price: priceInCents,
         description: formData.description,
-        imageUrl: "",
+        imageUrl, // Base64 string ou vazio
       });
-
-      // Se tem imagem, faz upload
-      let imageUrl = "";
-      if (formData.imageFile) {
-        imageUrl = await storageService.uploadProductImage(
-          formData.imageFile,
-          productId,
-        );
-
-        // Atualiza o produto com a URL da imagem
-        await productsService.updateProduct(productId, { imageUrl });
-      }
 
       // Recarrega a lista
       await loadProducts();
@@ -82,11 +86,16 @@ export function useProducts() {
         description: formData.description,
       };
 
-      // Se tem nova imagem, faz upload
+      // Se tem nova imagem, converte para Base64
       if (formData.imageFile) {
-        const imageUrl = await storageService.uploadProductImage(
+        if (!storageService.isValidImage(formData.imageFile)) {
+          throw new Error(
+            "Imagem inválida. Use JPG, PNG ou WebP com no máximo 2MB",
+          );
+        }
+
+        const imageUrl = await storageService.compressAndConvertImage(
           formData.imageFile,
-          productId,
         );
         updates.imageUrl = imageUrl;
       }
@@ -106,15 +115,7 @@ export function useProducts() {
     setError("");
 
     try {
-      // Busca o produto para pegar a URL da imagem
-      const product = products.find((p) => p.id === productId);
-
-      // Deleta a imagem do Storage (se existir)
-      if (product?.imageUrl) {
-        await storageService.deleteProductImage(product.imageUrl);
-      }
-
-      // Deleta o produto do Firestore
+      // Deleta o produto do Firestore (imagem está dentro dele)
       await productsService.deleteProduct(productId);
 
       // Recarrega a lista

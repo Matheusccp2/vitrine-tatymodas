@@ -29,35 +29,19 @@ export function Admin() {
 
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
-
-  /**
-   * Abre o formulário para adicionar novo produto
-   */
   const handleAddClick = () => {
     setEditingProduct(null);
     setIsFormOpen(true);
   };
-
-  /**
-   * Abre o formulário para editar produto
-   */
   const handleEdit = (product: Product) => {
     setEditingProduct(product);
     setIsFormOpen(true);
   };
-
-  /**
-   * Confirma e deleta um produto
-   */
   const handleDelete = async (productId: string) => {
     if (window.confirm("Tem certeza que deseja excluir este produto?")) {
       await deleteProduct(productId);
     }
   };
-
-  /**
-   * Salva produto (adicionar ou editar)
-   */
   const handleFormSubmit = async (formData: ProductFormData) => {
     if (editingProduct) {
       await updateProduct(editingProduct.id, formData);
@@ -66,16 +50,10 @@ export function Admin() {
     }
   };
 
-  /**
-   * Se não está autenticado, mostra tela de login
-   */
   if (!user && !authLoading) {
     return <LoginForm onLogin={login} error={authError} />;
   }
 
-  /**
-   * Loading inicial
-   */
   if (authLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
@@ -84,11 +62,8 @@ export function Admin() {
     );
   }
 
-  /**
-   * Painel admin (usuário autenticado)
-   */
   return (
-    <div className="flex min-h-screen flex-col bg-gradient-to-br from-pink-50 via-white to-purple-50">
+    <div className="flex min-h-screen flex-col from-pink-50 via-white to-purple-50">
       <Header user={user} onLogout={logout} />
 
       <main className="container mx-auto flex-1 px-4 py-8 sm:px-6 lg:px-8">

@@ -1,55 +1,22 @@
-import {
-  ref,
-  uploadBytes,
-  getDownloadURL,
-  deleteObject,
-} from 'firebase/storage';
-import { storage } from './firebase';
-import { STORAGE_PATHS } from '@/config/constants';
-
-export async function uploadProductImage(
-  file: File,
-  productId: string
-): Promise<string> {
-  try {
-    // Gera nome único para o arquivo: products/PRODUCT_ID_TIMESTAMP.extensão
-    const timestamp = Date.now();
-    const extension = file.name.split('.').pop();
-    const fileName = `${productId}_${timestamp}.${extension}`;
+export async function convertImageToBase64(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
     
-    // Referência para o arquivo no Storage
-    const storageRef = ref(storage, `${STORAGE_PATHS.PRODUCTS}/${fileName}`);
+    reader.onload = () => {
+      resolve(reader.result as string);
+    };
     
-    // Faz upload do arquivo
-    await uploadBytes(storageRef, file);
+    reader.onerror = () => {
+      reject(new Error('Erro ao ler o arquivo'));
+    };
     
-    // Obtém a URL pública
-    const downloadURL = await getDownloadURL(storageRef);
-    
-    return downloadURL;
-  } catch (error) {
-    console.error('Erro ao fazer upload da imagem:', error);
-    throw new Error('Não foi possível fazer upload da imagem');
-  }
-}
-
-export async function deleteProductImage(imageUrl: string): Promise<void> {
-  try {
-    // Extrai o caminho da URL
-    const imageRef = ref(storage, imageUrl);
-    
-    // Deleta o arquivo
-    await deleteObject(imageRef);
-  } catch (error) {
-    console.error('Erro ao deletar imagem:', error);
-    // Não lança erro aqui para não bloquear a exclusão do produto
-    // A imagem órfã será removida manualmente se necessário
-  }
+    reader.readAsDataURL(file);
+  });
 }
 
 export function isValidImage(file: File): boolean {
   const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
-  const maxSize = 5 * 1024 * 1024; // 5MB
+  const maxSize = 2 * 1024 * 1024; // 2MB (reduzido para evitar Firestore muito pesado)
 
   if (!validTypes.includes(file.type)) {
     return false;
@@ -60,4 +27,46 @@ export function isValidImage(file: File): boolean {
   }
 
   return true;
+}
+
+export async function compressAndConvertImage(
+  file: File,
+  maxWidth: number = 800
+): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    
+    reader.onload = (e) => {
+      const img = new Image();
+      
+      img.onload = () => {
+        // Cria canvas para redimensionar
+        const canvas = document.createElement('canvas');
+        let width = img.width;
+        let height = img.height;
+        
+        // Redimensiona mantendo proporção
+        if (width > maxWidth) {
+          height = (height * maxWidth) / width;
+          width = maxWidth;
+        }
+        
+        canvas.width = width;
+        canvas.height = height;
+        
+        const ctx = canvas.getContext('2d');
+        ctx?.drawImage(img, 0, 0, width, height);
+        
+        // Converte para Base64 com qualidade reduzida
+        const base64 = canvas.toDataURL('image/jpeg', 0.8);
+        resolve(base64);
+      };
+      
+      img.onerror = () => reject(new Error('Erro ao processar imagem'));
+      img.src = e.target?.result as string;
+    };
+    
+    reader.onerror = () => reject(new Error('Erro ao ler arquivo'));
+    reader.readAsDataURL(file);
+  });
 }
