@@ -1,4 +1,4 @@
-import { ShoppingBag, MessageCircle, LogOut } from 'lucide-react';
+import { MessageCircle, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { STORE_INFO } from '@/config/constants';
@@ -17,7 +17,7 @@ export function Header({ user, onLogout }: HeaderProps) {
         <div className="flex h-16 items-center justify-between">
           {/* Logo e informações */}
           <div className="flex items-center gap-3">
-            <ShoppingBag className="h-8 w-8 text-pink-600" />
+            <img src="/icon-logo.svg" alt="Logo do site" className='w-12 h-8'/>
             <div>
               <h1 className="text-xl font-bold text-gray-900">{STORE_INFO.name}</h1>
               <p className="text-xs text-gray-500">{STORE_INFO.tagline}</p>
@@ -40,7 +40,7 @@ export function Header({ user, onLogout }: HeaderProps) {
             {/* Badge e botão de logout para admin */}
             {user && (
               <>
-                <Badge variant="default" className="bg-purple-600">
+                <Badge variant="default" className="bg-purple-600 p-2 px-4">
                   Admin
                 </Badge>
                 <Button variant="outline" size="sm" onClick={onLogout} className="gap-2">
