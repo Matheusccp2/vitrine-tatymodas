@@ -1,34 +1,23 @@
-import { useEffect, useState } from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Home } from "@/pages/Home";
 import { Admin } from "@/pages/Admin";
 
 function App() {
-  const [currentPath, setCurrentPath] = useState(window.location.pathname);
+  return (
+    <BrowserRouter>
+      {/* 2. O componente Routes agrupa suas decisões de rota */}
+      <Routes>
+        {/* 3. Se a URL for "/admin", renderiza <Admin /> */}
+        <Route path="/admin" element={<Admin />} />
 
-  /**
-   * Observa mudanças na URL
-   */
-  useEffect(() => {
-    const handleLocationChange = () => {
-      setCurrentPath(window.location.pathname);
-    };
+        {/* 4. Para qualquer outra coisa (ou a raiz), renderiza <Home /> */}
+        <Route path="/" element={<Home />} />
 
-    // Escuta mudanças no histórico do navegador
-    window.addEventListener("popstate", handleLocationChange);
-
-    return () => {
-      window.removeEventListener("popstate", handleLocationChange);
-    };
-  }, []);
-
-  /**
-   * Roteamento simples baseado no caminho
-   */
-  if (currentPath === "/admin") {
-    return <Admin />;
-  }
-
-  return <Home />;
+        {/* Dica: Se quiser que Home apareça em qualquer rota desconhecida, use path="*" */}
+        <Route path="*" element={<Home />} />
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
 export default App;
