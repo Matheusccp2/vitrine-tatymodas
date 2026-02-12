@@ -62,7 +62,7 @@ export function ProductCard({
           </p>
           <div className="flex flex-wrap gap-1">
             {product.sizes.map((size) => (
-              <Badge key={size} variant="secondary" className="text-xs">
+              <Badge key={size} variant="secondary" className="text-xs py-1 px-4">
                 {size}
               </Badge>
             ))}
@@ -76,7 +76,7 @@ export function ProductCard({
           </p>
           <div className="flex flex-wrap gap-1">
             {product.colors?.map((color) => (
-              <Badge key={color} variant="outline" className="text-xs">
+              <Badge key={color} variant="secondary" className="flex items-center text-xs py-1 px-4">
                 {color}
               </Badge>
             ))}
