@@ -16,6 +16,7 @@ export function Home() {
   const [filters, setFilters] = useState<ProductFilters>({
     category: "all",
     searchTerm: "",
+    size: "all",
   });
 
   const { cart, addToCart, removeFromCart, clearCart, totalItems, totalPrice } =
@@ -31,12 +32,16 @@ export function Home() {
       const matchesCategory =
         filters.category === "all" || product.category === filters.category;
 
+      // Filtro de tamanho - ← ADICIONE
+      const matchesSize =
+        filters.size === "all" || product.sizes.includes(filters.size);
+
       // Filtro de busca por nome
       const matchesSearch =
         !filters.searchTerm ||
         product.name.toLowerCase().includes(filters.searchTerm.toLowerCase());
 
-      return matchesCategory && matchesSearch;
+      return matchesCategory && matchesSize && matchesSearch; // ← Atualize
     });
   }, [products, filters]);
 

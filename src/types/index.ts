@@ -41,4 +41,5 @@ export interface SelectOption {
 export interface ProductFilters {
   category: string; // "all" ou nome da categoria
   searchTerm: string; // Termo de busca
+  size: string;
 }

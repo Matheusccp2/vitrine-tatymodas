@@ -1,19 +1,20 @@
-import { SelectOption } from '@/types';
+import { SelectOption } from "@/types";
 
 export const CATEGORIES: SelectOption[] = [
-  { value: 'blusa', label: 'Blusa' },
-  { value: 'body', label: 'Body' },
-  { value: 'calca', label: 'Calça' },
-  { value: 'casaco', label: 'Casaco' },
-  { value: 'conjunto', label: 'Conjunto' },
-  { value: 'jaqueta', label: 'Jaqueta' },
-  { value: 'macaquinho', label: 'Macaquinho' },
-  { value: 'saia', label: 'Saia' },
-  { value: 'short', label: 'Short' },
-  { value: 'vestido', label: 'Vestido' },
+  { value: "Blusa", label: "Blusa" },
+  { value: "Body", label: "Body" },
+  { value: "Calca", label: "Calça" },
+  { value: "Casaco", label: "Casaco" },
+  { value: "Conjunto", label: "Conjunto" },
+  { value: "Jaqueta", label: "Jaqueta" },
+  { value: "Macaquinho", label: "Macaquinho" },
+  { value: "Saia", label: "Saia" },
+  { value: "Short", label: "Short" },
+  { value: "Vestido", label: "Vestido" },
+  { value: "Chemise", label: "Chemise" },
 ];
 
 export const ALL_CATEGORIES_OPTION: SelectOption = {
-  value: 'all',
-  label: 'Todas as categorias',
+  value: "all",
+  label: "Todas as categorias",
 };

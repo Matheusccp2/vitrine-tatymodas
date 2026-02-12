@@ -24,3 +24,8 @@ export const NUMERIC_SIZES: SelectOption[] = [
   { value: '48', label: '48' },
   { value: '50', label: '50' },
 ];
+
+export const ALL_SIZES_OPTION: SelectOption = {
+  value: 'all',
+  label: 'Todas os tamanhos',
+};
