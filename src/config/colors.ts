@@ -20,5 +20,12 @@ export const COLORS: SelectOption[] = [
   { value: 'Terracota', label: 'Terracota' },
   { value: 'Marsala', label: 'Marsala' },
   { value: 'Bordô', label: 'Bordô' },
+  { value: 'Floral', label: 'Floral' },
+  { value: 'Listrado', label: 'Listrado' },
+  { value: 'OffWhite', label: 'OffWhite' },
+  { value: 'Rosa BB', label: 'Rosa BB' },
+  { value: 'Verde Água', label: 'Verde Água' },
+  { value: 'Coral', label: 'Coral' },
+  { value: 'Nude', label: 'Nude' },
   // Adicione mais conforme necessário
 ];
