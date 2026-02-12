@@ -54,22 +54,18 @@ export function sendCartToWhatsApp(cart: CartItem[]): void {
  * Cria mensagem do carrinho
  */
 function createCartMessage(cart: CartItem[]): string {
-  let message = `Olá! Gostaria de fazer um pedido:\n\n`;
+  let message = `Olá! Gostaria de mais informações sobre:\n\n`;
   
   let total = 0;
   
   cart.forEach((item, index) => {
     const price = formatPrice(item.product.price);
-    const subtotal = formatPrice(item.product.price * item.quantity);
     total += item.product.price * item.quantity;
     
     message += `*${index + 1}. ${item.product.name}*\n`;
-    message += `   Código: ${item.product.sku || item.product.id.slice(0, 8)}\n`;
     message += `   Tamanho: ${item.selectedSize}\n`;
     message += `   Cor: ${item.selectedColor}\n`;
-    message += `   Quantidade: ${item.quantity}x\n`;
     message += `   Preço unit.: R$ ${price}\n`;
-    message += `   Subtotal: R$ ${subtotal}\n\n`;
   });
   
   message += `━━━━━━━━━━━━━━━\n`;
