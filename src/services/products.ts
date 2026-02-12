@@ -19,6 +19,7 @@ function firestoreToProduct(id: string, data: any): Product {
     name: data.name,
     category: data.category,
     sizes: data.sizes,
+    colors: data.colors,
     price: data.price,
     description: data.description || "",
     imageUrl: data.imageUrl || "",
