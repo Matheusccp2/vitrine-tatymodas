@@ -7,6 +7,9 @@ import { ProductCard } from "@/components/ProductCard";
 import { Card, CardContent } from "@/components/ui/card";
 import { useProducts } from "@/hooks/useProducts";
 import { ProductFilters } from "@/types";
+import { useCart } from "@/hooks/useCart";
+import { CartButton } from "@/components/CartButton";
+import { CartModal } from "@/components/CartModal";
 
 export function Home() {
   const { products, loading } = useProducts();
@@ -14,6 +17,10 @@ export function Home() {
     category: "all",
     searchTerm: "",
   });
+
+  const { cart, addToCart, removeFromCart, clearCart, totalItems, totalPrice } =
+    useCart();
+  const [cartOpen, setCartOpen] = useState(false);
 
   /**
    * Filtra produtos baseado nos filtros selecionados
@@ -35,7 +42,14 @@ export function Home() {
 
   return (
     <div className="flex min-h-screen flex-col bg-gradient-to-br from-pink-50 via-white to-purple-50">
-      <Header />
+      <Header
+        cartButton={
+          <CartButton
+            itemCount={totalItems}
+            onClick={() => setCartOpen(true)}
+          />
+        }
+      />
 
       <main className="container mx-auto flex-1 px-4 py-8 sm:px-6 lg:px-8">
         {/* Barra de Filtros */}
@@ -72,11 +86,24 @@ export function Home() {
         {!loading && filteredProducts.length > 0 && (
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {filteredProducts.map((product) => (
-              <ProductCard key={product.id} product={product} />
+              <ProductCard
+                key={product.id}
+                product={product}
+                onAddToCart={addToCart}
+              />
             ))}
           </div>
         )}
       </main>
+
+      <CartModal
+        open={cartOpen}
+        onOpenChange={setCartOpen}
+        cart={cart}
+        onRemove={removeFromCart}
+        onClear={clearCart}
+        totalPrice={totalPrice}
+      />
 
       <Footer />
     </div>

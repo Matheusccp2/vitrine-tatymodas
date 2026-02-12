@@ -1,6 +1,7 @@
 import { Product } from "@/types";
 import { WHATSAPP_NUMBER, STORE_INFO } from "@/config/constants";
 import { formatPrice } from "./formatters";
+import { CartItem } from "@/hooks/useCart";
 
 export function sendProductWhatsApp(product: Product): void {
   const message = createProductMessage(product);
@@ -37,3 +38,46 @@ function createProductMessage(product: Product): string {
 
 Poderia me dar mais detalhes?`;
 }
+
+/**
+ * Envia carrinho inteiro para WhatsApp
+ */
+export function sendCartToWhatsApp(cart: CartItem[]): void {
+  const message = createCartMessage(cart);
+  const encodedMessage = encodeURIComponent(message);
+  const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodedMessage}`;
+  
+  window.open(whatsappUrl, '_blank');
+}
+
+/**
+ * Cria mensagem do carrinho
+ */
+function createCartMessage(cart: CartItem[]): string {
+  let message = `Olá! Gostaria de fazer um pedido:\n\n`;
+  
+  let total = 0;
+  
+  cart.forEach((item, index) => {
+    const price = formatPrice(item.product.price);
+    const subtotal = formatPrice(item.product.price * item.quantity);
+    total += item.product.price * item.quantity;
+    
+    message += `*${index + 1}. ${item.product.name}*\n`;
+    message += `   Código: ${item.product.sku || item.product.id.slice(0, 8)}\n`;
+    message += `   Tamanho: ${item.selectedSize}\n`;
+    message += `   Cor: ${item.selectedColor}\n`;
+    message += `   Quantidade: ${item.quantity}x\n`;
+    message += `   Preço unit.: R$ ${price}\n`;
+    message += `   Subtotal: R$ ${subtotal}\n\n`;
+  });
+  
+  message += `━━━━━━━━━━━━━━━\n`;
+  message += `💰 *TOTAL: R$ ${formatPrice(total)}*\n\n`;
+  message += `Aguardo confirmação!`;
+  
+  return message;
+}
+
+// Não esqueça de importar o tipo CartItem no início do arquivo:
+// import { CartItem } from '@/hooks/useCart';

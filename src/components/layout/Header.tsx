@@ -8,9 +8,10 @@ import { User } from '@/types';
 interface HeaderProps {
   user?: User | null;
   onLogout?: () => void;
+  cartButton?: React.ReactNode;
 }
 
-export function Header({ user, onLogout }: HeaderProps) {
+export function Header({ user, onLogout, cartButton }: HeaderProps) {
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-white shadow-sm">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -26,6 +27,7 @@ export function Header({ user, onLogout }: HeaderProps) {
 
           {/* Ações do header */}
           <div className="flex items-center gap-3">
+            {cartButton}
             {/* Botão WhatsApp (sempre visível) */}
             <Button
               variant="outline"

@@ -1,5 +1,6 @@
 export interface Product {
   id: string; 
+  sku?: string;
   name: string; 
   category: string; 
   sizes: string[]; 
@@ -13,6 +14,7 @@ export interface Product {
 
 export interface ProductFormData {
   name: string;
+  sku: string;
   category: string;
   sizes: string[];
   colors: string[];
