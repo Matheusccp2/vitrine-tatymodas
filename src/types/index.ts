@@ -3,6 +3,7 @@ export interface Product {
   name: string; 
   category: string; 
   sizes: string[]; 
+  colors: string[];
   price: number; 
   description?: string; 
   imageUrl?: string; 
@@ -14,6 +15,7 @@ export interface ProductFormData {
   name: string;
   category: string;
   sizes: string[];
+  colors: string[];
   price: string;
   description: string;
   imageFile?: File; // Arquivo de imagem para upload

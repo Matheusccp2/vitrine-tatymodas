@@ -20,7 +20,8 @@ import {
 import { MultiSelect } from "@/components/ui/multi-select";
 import { ProductFormData, Product } from "@/types";
 import { CATEGORIES } from "@/config/categories";
-import { SIZES } from "@/config/sizes";
+import { SIZES, NUMERIC_SIZES } from "@/config/sizes";
+import { COLORS } from "@/config/colors";
 import { formatPriceInput } from "@/utils/formatters";
 
 interface ProductFormProps {
@@ -40,6 +41,7 @@ export function ProductForm({
     name: "",
     category: "",
     sizes: [],
+    colors: [],
     price: "",
     description: "",
   });
@@ -54,6 +56,7 @@ export function ProductForm({
         name: editingProduct.name,
         category: editingProduct.category,
         sizes: editingProduct.sizes,
+        colors: [],
         price: formatPriceInput(editingProduct.price.toString()),
         description: editingProduct.description || "",
       });
@@ -63,6 +66,7 @@ export function ProductForm({
         name: "",
         category: "",
         sizes: [],
+        colors: [],
         price: "",
         description: "",
       });
@@ -223,6 +227,21 @@ export function ProductForm({
             )}
           </div>
 
+          {/* Cores (Multi-select) */}
+          <div className="space-y-2">
+            <Label>Cores Disponíveis *</Label>
+            <MultiSelect
+              options={COLORS}
+              value={formData.colors}
+              onChange={(colors) => setFormData({ ...formData, colors })}
+            />
+            {formData.colors.length === 0 && (
+              <p className="text-xs text-gray-500">
+                Selecione pelo menos uma cor
+              </p>
+            )}
+          </div>
+
           {/* Preço (com formatação automática) */}
           <div className="space-y-2">
             <Label htmlFor="price">Preço (R$) *</Label>
@@ -283,7 +302,11 @@ export function ProductForm({
             </Button>
             <Button
               type="submit"
-              disabled={isSubmitting || formData.sizes.length === 0}
+              disabled={
+                isSubmitting ||
+                formData.sizes.length === 0 ||
+                formData.colors.length === 0
+              }
             >
               {isSubmitting
                 ? "Salvando..."
