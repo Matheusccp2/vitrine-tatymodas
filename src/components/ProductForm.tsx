@@ -39,6 +39,7 @@ export function ProductForm({
 }: ProductFormProps) {
   const [formData, setFormData] = useState<ProductFormData>({
     name: "",
+    sku: "",
     category: "",
     sizes: [],
     colors: [],
@@ -199,7 +200,6 @@ export function ProductForm({
                 setFormData({ ...formData, sku: e.target.value })
               }
               placeholder="Ex: VEST-001, BLU-123"
-              required
             />
             <p className="text-xs text-gray-500">
               Código único para identificar o produto (ex: VEST-001)

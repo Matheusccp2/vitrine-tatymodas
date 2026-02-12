@@ -14,7 +14,7 @@ export interface Product {
 
 export interface ProductFormData {
   name: string;
-  sku: string;
+  sku?: string;
   category: string;
   sizes: string[];
   colors: string[];
