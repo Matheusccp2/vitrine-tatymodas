@@ -39,6 +39,7 @@ export function ProductForm({
 }: ProductFormProps) {
   const [formData, setFormData] = useState<ProductFormData>({
     name: "",
+    sku: "",
     category: "",
     sizes: [],
     colors: [],
@@ -187,6 +188,22 @@ export function ProductForm({
               placeholder="Ex: Vestido Floral"
               required
             />
+          </div>
+
+          {/* SKU / Código */}
+          <div className="space-y-2">
+            <Label htmlFor="sku">Código/SKU do Produto *</Label>
+            <Input
+              id="sku"
+              value={formData.sku}
+              onChange={(e) =>
+                setFormData({ ...formData, sku: e.target.value })
+              }
+              placeholder="Ex: VEST-001, BLU-123"
+            />
+            <p className="text-xs text-gray-500">
+              Código único para identificar o produto (ex: VEST-001)
+            </p>
           </div>
 
           {/* Categoria (Select único) */}
