@@ -216,7 +216,7 @@ export function ProductForm({
           <div className="space-y-2">
             <Label>Tamanhos Disponíveis *</Label>
             <MultiSelect
-              options={SIZES}
+              options={[...SIZES, ...NUMERIC_SIZES]}
               value={formData.sizes}
               onChange={(sizes) => setFormData({ ...formData, sizes })}
             />
