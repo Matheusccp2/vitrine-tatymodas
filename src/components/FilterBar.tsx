@@ -1,15 +1,16 @@
-import { Search } from 'lucide-react';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { Search } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { CATEGORIES, ALL_CATEGORIES_OPTION } from '@/config/categories';
-import { ProductFilters } from '@/types';
+} from "@/components/ui/select";
+import { CATEGORIES, ALL_CATEGORIES_OPTION } from "@/config/categories";
+import { SIZES, NUMERIC_SIZES, ALL_SIZES_OPTION } from "@/config/sizes";
+import { ProductFilters } from "@/types";
 
 interface FilterBarProps {
   filters: ProductFilters;
@@ -24,6 +25,12 @@ export function FilterBar({ filters, onFiltersChange }: FilterBarProps) {
     onFiltersChange({ ...filters, category });
   };
 
+  const handleSizeChange = (size: string) => {
+    onFiltersChange({ ...filters, size });
+  };
+
+  const allSizes = [...SIZES, ...NUMERIC_SIZES];
+
   /**
    * Atualiza o termo de busca
    */
@@ -32,10 +39,10 @@ export function FilterBar({ filters, onFiltersChange }: FilterBarProps) {
   };
 
   return (
-    <div className="mb-8 space-y-4">
-      <div className="grid gap-4 sm:grid-cols-2">
+    <div className="mb-8 space-y-2">
+      <div className="grid gap-4 sm:grid-cols-4">
         {/* Filtro de Categoria */}
-        <div className="space-y-2">
+        <div className="space-y-3">
           <Label htmlFor="category-filter">Categoria</Label>
           <Select value={filters.category} onValueChange={handleCategoryChange}>
             <SelectTrigger id="category-filter">
@@ -53,9 +60,28 @@ export function FilterBar({ filters, onFiltersChange }: FilterBarProps) {
             </SelectContent>
           </Select>
         </div>
+        
+        <div className="space-y-2">
+          <Label htmlFor="size-filter">Tamanho</Label>
+          <Select value={filters.size} onValueChange={handleSizeChange}>
+            <SelectTrigger id="size-filter">
+              <SelectValue placeholder="Selecione um tamanho" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value={ALL_SIZES_OPTION.value}>
+                {ALL_SIZES_OPTION.label}
+              </SelectItem>
+              {allSizes.map((size) => (
+                <SelectItem key={size.value} value={size.value}>
+                  {size.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
 
         {/* Busca por Nome */}
-        <div className="space-y-2">
+        <div className="space-y-2 col-span-2">
           <Label htmlFor="search-filter">Buscar</Label>
           <div className="relative">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
