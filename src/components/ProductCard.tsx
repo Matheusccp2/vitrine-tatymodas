@@ -1,4 +1,5 @@
 import { Edit2, Trash2, ShoppingBag } from "lucide-react";
+import { FaWhatsapp } from "react-icons/fa"
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -114,9 +115,10 @@ export function ProductCard({
             </Button>
             <Button
               onClick={() => sendProductWhatsApp(product)}
-              className="flex-1 bg-green-600 hover:bg-green-700"
+              className="flex-1 gap-2 bg-green-600 hover:bg-green-700"
             >
-              WhatsApp Direto
+              <FaWhatsapp size={17}/>
+              WhatsApp
             </Button>
           </div>
         ) : (

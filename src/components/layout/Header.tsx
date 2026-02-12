@@ -1,9 +1,10 @@
-import { MessageCircle, LogOut } from 'lucide-react';
+import { LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { STORE_INFO } from '@/config/constants';
 import { openStoreWhatsApp } from '@/utils/whatsapp';
 import { User } from '@/types';
+import { FaWhatsapp } from 'react-icons/fa';
 
 interface HeaderProps {
   user?: User | null;
@@ -35,7 +36,7 @@ export function Header({ user, onLogout, cartButton }: HeaderProps) {
               onClick={openStoreWhatsApp}
               className="gap-2"
             >
-              <MessageCircle className="h-4 w-4" />
+              <FaWhatsapp size={18} />
               <span className="hidden sm:inline">WhatsApp</span>
             </Button>
 
