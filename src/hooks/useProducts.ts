@@ -56,6 +56,7 @@ export function useProducts() {
         category: formData.category,
         sizes: formData.sizes,
         price: priceInCents,
+        colors: formData.colors, 
         description: formData.description,
         imageUrl, // Base64 string ou vazio
       });

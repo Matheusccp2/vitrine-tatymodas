@@ -69,6 +69,20 @@ export function ProductCard({
           </div>
         </div>
 
+        {/* Cores em Badges */}
+        <div className="mb-3 space-y-2">
+          <p className="text-xs font-medium text-gray-500">
+            Cores disponíveis:
+          </p>
+          <div className="flex flex-wrap gap-1">
+            {product.colors?.map((color) => (
+              <Badge key={color} variant="outline" className="text-xs">
+                {color}
+              </Badge>
+            ))}
+          </div>
+        </div>
+
         {/* Preço */}
         <div className="mb-4 text-2xl font-bold text-pink-600">
           R$ {formatPrice(product.price)}
