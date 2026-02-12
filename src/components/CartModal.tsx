@@ -1,4 +1,4 @@
-import { X, Trash2 } from 'lucide-react';
+import { Trash2 } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -55,7 +55,7 @@ export function CartModal({
                   className="flex gap-4 rounded-lg border p-4"
                 >
                   {/* Imagem */}
-                  <div className="h-20 w-20 flex-shrink-0 overflow-hidden rounded bg-gray-100">
+                  <div className="h-20 w-20 overflow-hidden rounded bg-gray-100">
                     {item.product.imageUrl ? (
                       <img
                         src={item.product.imageUrl}
@@ -90,6 +90,7 @@ export function CartModal({
                     variant="ghost"
                     size="sm"
                     onClick={() => onRemove(index)}
+                    className='hover:bg-red-500 hover:text-white'
                   >
                     <Trash2 className="h-4 w-4" />
                   </Button>
