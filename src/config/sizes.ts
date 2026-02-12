@@ -8,6 +8,9 @@ export const SIZES: SelectOption[] = [
   { value: 'GG', label: 'GG' },
   { value: 'XG', label: 'XG' },
   { value: 'XGG', label: 'XGG' },
+  { value: 'G1', label: 'G1' },
+  { value: 'G2', label: 'G2' },
+  { value: 'G3', label: 'G3' },
 ];
 
 export const NUMERIC_SIZES: SelectOption[] = [

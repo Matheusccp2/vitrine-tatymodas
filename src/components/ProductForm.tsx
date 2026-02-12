@@ -20,7 +20,7 @@ import {
 import { MultiSelect } from "@/components/ui/multi-select";
 import { ProductFormData, Product } from "@/types";
 import { CATEGORIES } from "@/config/categories";
-import { SIZES } from "@/config/sizes";
+import { SIZES, NUMERIC_SIZES } from "@/config/sizes";
 import { formatPriceInput } from "@/utils/formatters";
 
 interface ProductFormProps {
@@ -212,7 +212,7 @@ export function ProductForm({
           <div className="space-y-2">
             <Label>Tamanhos Disponíveis *</Label>
             <MultiSelect
-              options={SIZES}
+              options={[...SIZES, ...NUMERIC_SIZES]}
               value={formData.sizes}
               onChange={(sizes) => setFormData({ ...formData, sizes })}
             />
