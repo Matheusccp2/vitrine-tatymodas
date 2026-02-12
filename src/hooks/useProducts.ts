@@ -69,48 +69,42 @@ export function useProducts() {
     }
   };
 
-  const updateProduct = async (
-    productId: string,
-    formData: ProductFormData,
-  ) => {
-    setError("");
+  const updateProduct = async (productId: string, formData: ProductFormData) => {
+  setError('');
 
-    try {
-      const priceInCents = parsePriceToCents(formData.price);
+  try {
+    const priceInCents = parsePriceToCents(formData.price);
 
-      // Prepara os dados para atualização
-      const updates: any = {
-        name: formData.name,
-        category: formData.category,
-        sizes: formData.sizes,
-        price: priceInCents,
-        description: formData.description,
-      };
+    // Prepara os dados para atualização
+    const updates: any = {
+      name: formData.name,
+      category: formData.category,
+      sizes: formData.sizes,
+      colors: formData.colors,     // ← ADICIONE ESTA LINHA
+      price: priceInCents,
+      description: formData.description,
+    };
 
-      // Se tem nova imagem, converte para Base64
-      if (formData.imageFile) {
-        if (!storageService.isValidImage(formData.imageFile)) {
-          throw new Error(
-            "Imagem inválida. Use JPG, PNG ou WebP com no máximo 2MB",
-          );
-        }
-
-        const imageUrl = await storageService.compressAndConvertImage(
-          formData.imageFile,
-        );
-        updates.imageUrl = imageUrl;
+    // Se tem nova imagem, converte para Base64
+    if (formData.imageFile) {
+      if (!storageService.isValidImage(formData.imageFile)) {
+        throw new Error('Imagem inválida. Use JPG, PNG ou WebP com no máximo 2MB');
       }
-
-      // Atualiza no Firestore
-      await productsService.updateProduct(productId, updates);
-
-      // Recarrega a lista
-      await loadProducts();
-    } catch (err: any) {
-      setError(err.message || "Erro ao atualizar produto");
-      throw err;
+      
+      const imageUrl = await storageService.compressAndConvertImage(formData.imageFile);
+      updates.imageUrl = imageUrl;
     }
-  };
+
+    // Atualiza no Firestore
+    await productsService.updateProduct(productId, updates);
+
+    // Recarrega a lista
+    await loadProducts();
+  } catch (err: any) {
+    setError(err.message || 'Erro ao atualizar produto');
+    throw err;
+  }
+};
 
   const deleteProduct = async (productId: string) => {
     setError("");

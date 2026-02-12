@@ -1,17 +1,17 @@
 import { SelectOption } from '@/types';
 
 export const COLORS: SelectOption[] = [
-  { value: 'preto', label: 'Preto' },
-  { value: 'branco', label: 'Branco' },
-  { value: 'vermelho', label: 'Vermelho' },
-  { value: 'azul', label: 'Azul' },
-  { value: 'rosa', label: 'Rosa' },
-  { value: 'verde', label: 'Verde' },
-  { value: 'amarelo', label: 'Amarelo' },
-  { value: 'roxo', label: 'Roxo' },
-  { value: 'laranja', label: 'Laranja' },
-  { value: 'cinza', label: 'Cinza' },
-  { value: 'bege', label: 'Bege' },
-  { value: 'marrom', label: 'Marrom' },
+  { value: 'Preto', label: 'Preto' },
+  { value: 'Branco', label: 'Branco' },
+  { value: 'Vermelho', label: 'Vermelho' },
+  { value: 'Azul', label: 'Azul' },
+  { value: 'Rosa', label: 'Rosa' },
+  { value: 'Verde', label: 'Verde' },
+  { value: 'Amarelo', label: 'Amarelo' },
+  { value: 'Roxo', label: 'Roxo' },
+  { value: 'Laranja', label: 'Laranja' },
+  { value: 'Cinza', label: 'Cinza' },
+  { value: 'Bege', label: 'Bege' },
+  { value: 'Marrom', label: 'Marrom' },
   // Adicione mais conforme necessário
 ];
