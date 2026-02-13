@@ -3,13 +3,16 @@ import { WHATSAPP_NUMBER, STORE_INFO } from "@/config/constants";
 import { formatPrice } from "./formatters";
 import { CartItem } from "@/hooks/useCart";
 
-export function sendProductWhatsApp(product: Product): void {
-  const message = createProductMessage(product);
+export function sendProductWhatsApp(
+  product: Product, 
+  selectedSize: string, 
+  selectedColor: string
+): void {
+  const message = createProductMessage(product, selectedSize, selectedColor);
   const encodedMessage = encodeURIComponent(message);
   const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodedMessage}`;
-
-  // Abre em nova aba
-  window.open(whatsappUrl, "_blank");
+  
+  window.open(whatsappUrl, '_blank');
 }
 
 export function openStoreWhatsApp(): void {
@@ -20,19 +23,20 @@ export function openStoreWhatsApp(): void {
   window.open(whatsappUrl, "_blank");
 }
 
-function createProductMessage(product: Product): string {
+function createProductMessage(
+  product: Product, 
+  selectedSize: string, 
+  selectedColor: string
+): string {
   const price = formatPrice(product.price);
-  const sizes = product.sizes.join(", ");
-  const colors = product.colors?.join(", ") || "Não especificado";
-
   // ← Personalize a mensagem como quiser aqui
   return `Olá! Tenho interesse neste item:
 
  *${product.name}*
 ------------------------------
 • *Categoria*: ${product.category}
-• *Tamanhos*: ${sizes}
-• *Cores*: ${colors}
+• *Tamanhos*: ${selectedSize}
+• *Cores*: ${selectedColor}
 • *Valor*: R$ ${price}
 ------------------------------
 
@@ -65,7 +69,7 @@ function createCartMessage(cart: CartItem[]): string {
     message += `*${index + 1}. ${item.product.name}*\n`;
     message += `   Tamanho: ${item.selectedSize}\n`;
     message += `   Cor: ${item.selectedColor}\n`;
-    message += `   Preço unit.: R$ ${price}\n`;
+    message += `   Preço unit.: R$ ${price}\n\n`;
   });
   
   message += `━━━━━━━━━━━━━━━\n`;
