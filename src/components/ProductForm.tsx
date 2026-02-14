@@ -154,6 +154,17 @@ export function ProductForm({
    */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (formData.sizes.length === 0) {
+      alert("Por favor, selecione pelo menos um tamanho.");
+      return;
+    }
+
+    if (formData.colors.length === 0) {
+      alert("Por favor, selecione pelo menos uma cor.");
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
@@ -322,7 +333,11 @@ export function ProductForm({
               disabled={
                 isSubmitting ||
                 formData.sizes.length === 0 ||
-                formData.colors.length === 0
+                formData.colors.length === 0 ||
+                !formData.name ||
+                !formData.sku ||
+                !formData.category ||
+                !formData.price
               }
             >
               {isSubmitting

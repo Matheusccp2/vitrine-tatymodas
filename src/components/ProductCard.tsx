@@ -131,7 +131,7 @@ export function ProductCard({
                 }
                 variant="outline"
                 className="flex-1"
-                disabled={!selectedSize}
+                disabled={!selectedSize || !selectedColor}
               >
                 Adicionar ao Carrinho
               </Button>
@@ -140,14 +140,14 @@ export function ProductCard({
                   sendProductWhatsApp(product, selectedSize, selectedColor)
                 }
                 className="flex-1 gap-2 bg-green-600 hover:bg-green-700"
-                disabled={!selectedSize}
+                disabled={!selectedSize || !selectedColor}
               >
                 <FaWhatsapp size={17} />
                 WhatsApp
               </Button>
             </div>
             {(!selectedSize || !selectedColor) && (
-              <p className="text-xs text-center text-amber-600">
+              <p className="text-xs text-center text-amber-600 font-medium">
                 ⚠️ Selecione tamanho e cor antes de continuar
               </p>
             )}
