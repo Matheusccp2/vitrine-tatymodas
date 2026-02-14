@@ -26,6 +26,37 @@ export function ProductCard({
   const [selectedSize, setSelectedSize] = useState("");
   const [selectedColor, setSelectedColor] = useState("");
 
+  const [showSizeError, setShowSizeError] = useState(false);
+  const [showColorError, setShowColorError] = useState(false);
+
+  const validateSelection = (): boolean => {
+    let isValid = true;
+
+    if (!selectedSize) {
+      setShowSizeError(true);
+      isValid = false;
+    }
+
+    if (!selectedColor) {
+      setShowColorError(true);
+      isValid = false;
+    }
+
+    return isValid;
+  };
+
+  const handleAddToCart = () => {
+    if (validateSelection()) {
+      onAddToCart?.(product, selectedSize, selectedColor);
+    }
+  };
+
+  const handleSendWhatsApp = () => {
+    if (validateSelection()) {
+      sendProductWhatsApp(product, selectedSize, selectedColor);
+    }
+  };
+
   return (
     <Card className="overflow-hidden transition-all hover:shadow-lg">
       {/* Imagem do Produto */}
@@ -71,7 +102,7 @@ export function ProductCard({
                 {selectedSize}
               </span>
             ) : (
-              <span className="text-amber-600">Selecione um tamanho</span>
+              <span className="text-gray-400">Selecione um tamanho</span>
             )}
           </p>
           <div className="flex flex-wrap gap-1">
@@ -79,13 +110,21 @@ export function ProductCard({
               <Badge
                 key={size}
                 variant={selectedSize === size ? "default" : "outline"}
-                className="cursor-pointer transition-all hover:scale-105 p-2 px-4"
-                onClick={() => setSelectedSize(size)}
+                className="cursor-pointer transition-all hover:scale-105"
+                onClick={() => {
+                  setSelectedSize(size);
+                  setShowSizeError(false); // ← Limpa erro ao selecionar
+                }}
               >
                 {size}
               </Badge>
             ))}
           </div>
+          {showSizeError && (
+            <p className="text-xs text-red-600 font-medium animate-pulse">
+              ⚠️ Selecione um tamanho antes de continuar
+            </p>
+          )}
         </div>
 
         {/* Cores selecionáveis */}
@@ -98,7 +137,7 @@ export function ProductCard({
                   {selectedColor}
                 </span>
               ) : (
-                <span className="text-amber-600">Selecione uma cor</span>
+                <span className="text-gray-400">Selecione uma cor</span>
               )}
             </p>
             <div className="flex flex-wrap gap-1">
@@ -106,13 +145,21 @@ export function ProductCard({
                 <Badge
                   key={color}
                   variant={selectedColor === color ? "default" : "outline"}
-                  className="cursor-pointer transition-all hover:scale-105 p-2 px-4"
-                  onClick={() => setSelectedColor(color)}
+                  className="cursor-pointer transition-all hover:scale-105"
+                  onClick={() => {
+                    setSelectedColor(color);
+                    setShowColorError(false); // ← Limpa erro ao selecionar
+                  }}
                 >
                   {color}
                 </Badge>
               ))}
             </div>
+            {showColorError && (
+              <p className="text-xs text-red-600 font-medium animate-pulse">
+                ⚠️ Selecione uma cor antes de continuar
+              </p>
+            )}
           </div>
         )}
 
@@ -123,34 +170,23 @@ export function ProductCard({
 
         {/* Ações */}
         {!isAdmin ? (
-          <div className="space-y-2">
-            <div className="flex gap-2">
-              <Button
-                onClick={() =>
-                  onAddToCart?.(product, selectedSize, selectedColor)
-                }
-                variant="outline"
-                className="flex-1"
-                disabled={!selectedSize || !selectedColor}
-              >
-                Adicionar ao Carrinho
-              </Button>
-              <Button
-                onClick={() =>
-                  sendProductWhatsApp(product, selectedSize, selectedColor)
-                }
-                className="flex-1 gap-2 bg-green-600 hover:bg-green-700"
-                disabled={!selectedSize || !selectedColor}
-              >
-                <FaWhatsapp size={17} />
-                WhatsApp
-              </Button>
-            </div>
-            {(!selectedSize || !selectedColor) && (
-              <p className="text-xs text-center text-amber-600 font-medium">
-                ⚠️ Selecione tamanho e cor antes de continuar
-              </p>
-            )}
+          <div className="flex gap-2">
+            <Button
+              onClick={handleAddToCart} // ← Use a função de validação
+              variant="outline"
+              className="flex-1"
+              // ← REMOVA: disabled={!selectedSize || !selectedColor}
+            >
+              Adicionar ao Carrinho
+            </Button>
+            <Button
+              onClick={handleSendWhatsApp} // ← Use a função de validação
+              className="flex-1 gap-2 bg-green-600 hover:bg-green-700"
+              // ← REMOVA: disabled={!selectedSize || !selectedColor}
+            >
+              <FaWhatsapp size={14} />
+              WhatsApp
+            </Button>
           </div>
         ) : (
           // Botões de Editar/Excluir para admin
