@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Plus, ShoppingBag } from "lucide-react";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
@@ -10,6 +10,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useAuth } from "@/hooks/useAuth";
 import { useProducts } from "@/hooks/useProducts";
 import { Product, ProductFormData } from "@/types";
+import { FilterBar } from "@/components/FilterBar";
+import { ProductFilters } from "@/types";
 
 export function Admin() {
   const {
@@ -29,6 +31,33 @@ export function Admin() {
 
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+
+  const [filters, setFilters] = useState<ProductFilters>({
+    category: "all",
+    size: "all",
+    searchTerm: "",
+  });
+
+  const filteredProducts = useMemo(() => {
+    return products.filter((product) => {
+      // Filtro de categoria
+      const matchesCategory =
+        filters.category === "all" || product.category === filters.category;
+
+      // Filtro de tamanho
+      const matchesSize =
+        filters.size === "all" || product.sizes.includes(filters.size);
+
+      // Filtro de busca por nome
+      const matchesSearch =
+        !filters.searchTerm ||
+        product.name.toLowerCase().includes(filters.searchTerm.toLowerCase()) ||
+        product.sku?.toLowerCase().includes(filters.searchTerm.toLowerCase());
+
+      return matchesCategory && matchesSize && matchesSearch;
+    });
+  }, [products, filters]);
+
   const handleAddClick = () => {
     setEditingProduct(null);
     setIsFormOpen(true);
@@ -79,6 +108,8 @@ export function Admin() {
           </Button>
         </div>
 
+        <FilterBar filters={filters} onFiltersChange={setFilters} />
+
         {/* Loading */}
         {productsLoading && (
           <div className="flex items-center justify-center py-12">
@@ -86,7 +117,24 @@ export function Admin() {
           </div>
         )}
 
-        {/* Lista Vazia */}
+        {!productsLoading &&
+          filteredProducts.length === 0 &&
+          products.length > 0 && (
+            <Card className="py-12 text-center">
+              <CardContent className="space-y-4">
+                <ShoppingBag className="mx-auto h-16 w-16 text-gray-300" />
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900">
+                    Nenhum produto encontrado
+                  </h3>
+                  <p className="text-sm text-gray-500">
+                    Tente ajustar os filtros de busca
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
         {!productsLoading && products.length === 0 && (
           <Card className="py-12 text-center">
             <CardContent className="space-y-4">
@@ -103,10 +151,9 @@ export function Admin() {
           </Card>
         )}
 
-        {/* Grid de Produtos */}
-        {!productsLoading && products.length > 0 && (
+        {!productsLoading && filteredProducts.length > 0 && (
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {products.map((product) => (
+            {filteredProducts.map((product) => (
               <ProductCard
                 key={product.id}
                 product={product}
