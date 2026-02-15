@@ -48,9 +48,9 @@ export function ProductForm({
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  /**
-   * Preenche o formulário quando está editando
-   */
+  const [showSizeError, setShowSizeError] = useState(false);
+  const [showColorError, setShowColorError] = useState(false);
+
   useEffect(() => {
     if (editingProduct) {
       setFormData({
@@ -149,11 +149,30 @@ export function ProductForm({
     }
   }, [formData.price]);
 
-  /**
-   * Submete o formulário
-   */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Reseta erros
+    setShowSizeError(false);
+    setShowColorError(false);
+
+    // Validação
+    let hasError = false;
+
+    if (formData.sizes.length === 0) {
+      setShowSizeError(true);
+      hasError = true;
+    }
+
+    if (formData.colors.length === 0) {
+      setShowColorError(true);
+      hasError = true;
+    }
+
+    if (hasError) {
+      return; // Para aqui se tiver erro
+    }
+
     setIsSubmitting(true);
 
     try {
@@ -165,6 +184,20 @@ export function ProductForm({
       setIsSubmitting(false);
     }
   };
+
+  // Limpa erro de tamanhos quando selecionar
+  useEffect(() => {
+    if (formData.sizes.length > 0) {
+      setShowSizeError(false);
+    }
+  }, [formData.sizes]);
+
+  // Limpa erro de cores quando selecionar
+  useEffect(() => {
+    if (formData.colors.length > 0) {
+      setShowColorError(false);
+    }
+  }, [formData.colors]);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -237,9 +270,10 @@ export function ProductForm({
               value={formData.sizes}
               onChange={(sizes) => setFormData({ ...formData, sizes })}
             />
-            {formData.sizes.length === 0 && (
-              <p className="text-xs text-gray-500">
-                Selecione pelo menos um tamanho
+            {/* Só mostra erro se showSizeError for true */}
+            {showSizeError && (
+              <p className="text-xs text-red-600 font-medium animate-pulse">
+                ⚠️ Selecione pelo menos um tamanho (obrigatório)
               </p>
             )}
           </div>
@@ -252,9 +286,10 @@ export function ProductForm({
               value={formData.colors}
               onChange={(colors) => setFormData({ ...formData, colors })}
             />
-            {formData.colors.length === 0 && (
-              <p className="text-xs text-gray-500">
-                Selecione pelo menos uma cor
+            {/* Só mostra erro se showColorError for true */}
+            {showColorError && (
+              <p className="text-xs text-red-600 font-medium animate-pulse">
+                ⚠️ Selecione pelo menos uma cor (obrigatório)
               </p>
             )}
           </div>
@@ -319,11 +354,7 @@ export function ProductForm({
             </Button>
             <Button
               type="submit"
-              disabled={
-                isSubmitting ||
-                formData.sizes.length === 0 ||
-                formData.colors.length === 0
-              }
+              disabled={isSubmitting} // ← REMOVA as outras validações
             >
               {isSubmitting
                 ? "Salvando..."
