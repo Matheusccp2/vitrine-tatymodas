@@ -25,8 +25,9 @@ export const COLORS: SelectOption[] = [
   { value: 'Rosa BB', label: 'Rosa BB' },
   { value: 'Roxo', label: 'Roxo' },
   { value: 'Terracota', label: 'Terracota' },
-  { value: 'Verde', label: 'Verde' },
   { value: 'Vermelho', label: 'Vermelho' },
+  { value: 'Verde', label: 'Verde' },
   { value: 'Verde Água', label: 'Verde Água' },
+  { value: 'Verde Menta', label: 'Verde Menta' },
   // Adicione mais conforme necessário
 ];

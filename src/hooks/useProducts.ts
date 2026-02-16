@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect } from "react";
 import { Product, ProductFormData } from "@/types";
 import * as productsService from "@/services/products";
