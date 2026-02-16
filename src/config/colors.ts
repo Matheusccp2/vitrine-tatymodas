@@ -12,6 +12,7 @@ export const COLORS: SelectOption[] = [
   { value: 'Cinza', label: 'Cinza' },
   { value: 'Coral', label: 'Coral' },
   { value: 'Floral', label: 'Floral' },
+  { value: 'Jeans', label: 'Jeans' },
   { value: 'Laranja', label: 'Laranja' },
   { value: 'Listrado', label: 'Listrado' },
   { value: 'Marrom', label: 'Marrom' },
