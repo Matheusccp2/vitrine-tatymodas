@@ -1,15 +1,15 @@
-import { Trash2 } from 'lucide-react';
+import { Trash2 } from "lucide-react";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { CartItem } from '@/hooks/useCart';
-import { formatPrice } from '@/utils/formatters';
-import { sendCartToWhatsApp } from '@/utils/whatsapp';
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { CartItem } from "@/hooks/useCart";
+import { formatPrice } from "@/utils/formatters";
+import { sendCartToWhatsApp } from "@/utils/whatsapp";
 
 interface CartModalProps {
   open: boolean;
@@ -50,10 +50,7 @@ export function CartModal({
             {/* Lista de itens */}
             <div className="space-y-4">
               {cart.map((item, index) => (
-                <div
-                  key={index}
-                  className="flex gap-4 rounded-lg border p-4"
-                >
+                <div key={index} className="flex gap-4 rounded-lg border p-4">
                   {/* Imagem */}
                   <div className="h-20 w-20 overflow-hidden rounded bg-gray-100">
                     {item.product.imageUrl ? (
@@ -75,9 +72,13 @@ export function CartModal({
                     <p className="text-sm text-gray-600">
                       Código: {item.product.sku || item.product.id.slice(0, 8)}
                     </p>
-                    <div className="mt-1 flex gap-2">
-                      <Badge variant="secondary">{item.selectedSize}</Badge>
-                      <Badge variant="outline">{item.selectedColor}</Badge>
+                    <div className="mt-1 flex flex-wrap gap-2">
+                      <Badge variant="secondary">
+                        Tamanhos: {item.selectedSizes.join(", ")}
+                      </Badge>
+                      <Badge variant="outline">
+                        Cores: {item.selectedColors.join(", ")}
+                      </Badge>
                       <Badge>Qtd: {item.quantity}</Badge>
                     </div>
                     <p className="mt-2 font-semibold text-pink-600">
@@ -90,7 +91,7 @@ export function CartModal({
                     variant="ghost"
                     size="sm"
                     onClick={() => onRemove(index)}
-                    className='hover:bg-red-500 hover:text-white'
+                    className="hover:bg-red-500 hover:text-white"
                   >
                     <Trash2 className="h-4 w-4" />
                   </Button>
@@ -110,11 +111,7 @@ export function CartModal({
 
             {/* Botões */}
             <div className="flex gap-2">
-              <Button
-                variant="outline"
-                onClick={onClear}
-                className="flex-1"
-              >
+              <Button variant="outline" onClick={onClear} className="flex-1">
                 Limpar Carrinho
               </Button>
               <Button

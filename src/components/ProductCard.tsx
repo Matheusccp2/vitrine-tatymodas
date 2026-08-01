@@ -13,7 +13,7 @@ interface ProductCardProps {
   isAdmin?: boolean;
   onEdit?: (product: Product) => void;
   onDelete?: (id: string) => void;
-  onAddToCart?: (product: Product, size: string, color: string) => void;
+  onAddToCart?: (product: Product, sizes: string[], colors: string[]) => void;
 }
 
 export function ProductCard({
@@ -24,7 +24,7 @@ export function ProductCard({
   onAddToCart,
 }: ProductCardProps) {
   const [selectedSize, setSelectedSize] = useState("");
-  const [selectedColor, setSelectedColor] = useState("");
+  const [selectedColors, setSelectedColors] = useState<string[]>([]);
 
   const [showSizeError, setShowSizeError] = useState(false);
   const [showColorError, setShowColorError] = useState(false);
@@ -37,7 +37,7 @@ export function ProductCard({
       isValid = false;
     }
 
-    if (!selectedColor) {
+    if (selectedColors.length === 0) {
       setShowColorError(true);
       isValid = false;
     }
@@ -45,15 +45,31 @@ export function ProductCard({
     return isValid;
   };
 
+  const toggleSize = (size: string) => {
+    setSelectedSize(size);
+    setShowSizeError(false);
+  };
+
+  const toggleColor = (color: string) => {
+    setSelectedColors((prev) =>
+      prev.includes(color)
+        ? prev.filter((item) => item !== color)
+        : [...prev, color],
+    );
+    setShowColorError(false);
+  };
+
   const handleAddToCart = () => {
-    if (validateSelection()) {
-      onAddToCart?.(product, selectedSize, selectedColor);
+    if (!validateSelection()) {
+      return;
     }
+
+    onAddToCart?.(product, [selectedSize], selectedColors);
   };
 
   const handleSendWhatsApp = () => {
     if (validateSelection()) {
-      sendProductWhatsApp(product, selectedSize, selectedColor);
+      sendProductWhatsApp(product, [selectedSize], selectedColors);
     }
   };
 
@@ -111,10 +127,7 @@ export function ProductCard({
                 key={size}
                 variant={selectedSize === size ? "default" : "outline"}
                 className="cursor-pointer transition-all hover:scale-105"
-                onClick={() => {
-                  setSelectedSize(size);
-                  setShowSizeError(false); // ← Limpa erro ao selecionar
-                }}
+                onClick={() => toggleSize(size)}
               >
                 {size}
               </Badge>
@@ -132,24 +145,25 @@ export function ProductCard({
           <div className="mb-3 space-y-2">
             <p className="text-xs font-medium text-gray-500">
               Cor:{" "}
-              {selectedColor ? (
+              {selectedColors.length > 0 ? (
                 <span className="text-pink-600 font-semibold">
-                  {selectedColor}
+                  {selectedColors.join(", ")}
                 </span>
               ) : (
-                <span className="text-gray-400">Selecione uma cor</span>
+                <span className="text-gray-400">
+                  Selecione uma ou mais cores
+                </span>
               )}
             </p>
             <div className="flex flex-wrap gap-1">
               {product.colors.map((color) => (
                 <Badge
                   key={color}
-                  variant={selectedColor === color ? "default" : "outline"}
+                  variant={
+                    selectedColors.includes(color) ? "default" : "outline"
+                  }
                   className="cursor-pointer transition-all hover:scale-105"
-                  onClick={() => {
-                    setSelectedColor(color);
-                    setShowColorError(false); // ← Limpa erro ao selecionar
-                  }}
+                  onClick={() => toggleColor(color)}
                 >
                   {color}
                 </Badge>
@@ -157,7 +171,7 @@ export function ProductCard({
             </div>
             {showColorError && (
               <p className="text-xs text-red-600 font-medium animate-pulse">
-                ⚠️ Selecione uma cor antes de continuar
+                ⚠️ Selecione pelo menos uma cor antes de continuar
               </p>
             )}
           </div>
