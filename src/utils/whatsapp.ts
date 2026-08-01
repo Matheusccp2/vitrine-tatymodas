@@ -4,15 +4,15 @@ import { formatPrice } from "./formatters";
 import { CartItem } from "@/hooks/useCart";
 
 export function sendProductWhatsApp(
-  product: Product, 
-  selectedSize: string, 
-  selectedColor: string
+  product: Product,
+  selectedSizes: string[],
+  selectedColors: string[],
 ): void {
-  const message = createProductMessage(product, selectedSize, selectedColor);
+  const message = createProductMessage(product, selectedSizes, selectedColors);
   const encodedMessage = encodeURIComponent(message);
   const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodedMessage}`;
-  
-  window.open(whatsappUrl, '_blank');
+
+  window.open(whatsappUrl, "_blank");
 }
 
 export function openStoreWhatsApp(): void {
@@ -24,20 +24,24 @@ export function openStoreWhatsApp(): void {
 }
 
 function createProductMessage(
-  product: Product, 
-  selectedSize: string, 
-  selectedColor: string
+  product: Product,
+  selectedSizes: string[],
+  selectedColors: string[],
 ): string {
-  const price = formatPrice(product.price);
-  // ← Personalize a mensagem como quiser aqui
+  const totalQuantity = selectedSizes.length * selectedColors.length;
+  const totalPrice = formatPrice(product.price * totalQuantity);
+  const sizesText = selectedSizes.join(", ");
+  const colorsText = selectedColors.join(", ");
+
   return `Olá! Tenho interesse neste item:
 
  *${product.name}*
 ------------------------------
 • *Categoria*: ${product.category}
-• *Tamanhos*: ${selectedSize}
-• *Cores*: ${selectedColor}
-• *Valor*: R$ ${price}
+• *Tamanhos*: ${sizesText}
+• *Cores*: ${colorsText}
+• *Quantidade*: ${totalQuantity} unidade(s)
+• *Valor total*: R$ ${totalPrice}
 ------------------------------
 
 Poderia me dar mais detalhes?`;
@@ -50,8 +54,8 @@ export function sendCartToWhatsApp(cart: CartItem[]): void {
   const message = createCartMessage(cart);
   const encodedMessage = encodeURIComponent(message);
   const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodedMessage}`;
-  
-  window.open(whatsappUrl, '_blank');
+
+  window.open(whatsappUrl, "_blank");
 }
 
 /**
@@ -59,23 +63,24 @@ export function sendCartToWhatsApp(cart: CartItem[]): void {
  */
 function createCartMessage(cart: CartItem[]): string {
   let message = `Olá! Gostaria de mais informações sobre:\n\n`;
-  
+
   let total = 0;
-  
+
   cart.forEach((item, index) => {
-    const price = formatPrice(item.product.price);
-    total += item.product.price * item.quantity;
-    
+    const subtotal = item.product.price * item.quantity;
+    total += subtotal;
+
     message += `*${index + 1}. ${item.product.name}*\n`;
-    message += `   Tamanho: ${item.selectedSize}\n`;
-    message += `   Cor: ${item.selectedColor}\n`;
-    message += `   Preço unit.: R$ ${price}\n\n`;
+    message += `   Tamanhos: ${item.selectedSizes.join(", ")}\n`;
+    message += `   Cores: ${item.selectedColors.join(", ")}\n`;
+    message += `   Quantidade: ${item.quantity} unidade(s)\n`;
+    message += `   Subtotal: R$ ${formatPrice(subtotal)}\n\n`;
   });
-  
+
   message += `━━━━━━━━━━━━━━━\n`;
   message += `💰 *TOTAL: R$ ${formatPrice(total)}*\n\n`;
   message += `Aguardo confirmação!`;
-  
+
   return message;
 }
 

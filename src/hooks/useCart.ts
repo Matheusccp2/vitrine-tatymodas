@@ -1,50 +1,95 @@
-import { useState, useEffect } from 'react';
-import { Product } from '@/types';
+import { useState, useEffect } from "react";
+import { Product } from "@/types";
 
 // Item do carrinho com produto + seleções
 export interface CartItem {
   product: Product;
-  selectedSize: string;
-  selectedColor: string;
+  selectedSizes: string[];
+  selectedColors: string[];
   quantity: number;
 }
+
+const areSameSelections = (a: string[], b: string[]) => {
+  if (a.length !== b.length) {
+    return false;
+  }
+
+  return a.every((value) => b.includes(value));
+};
+
+const getSelectionQuantity = (sizes: string[], colors: string[]) => {
+  return sizes.length * colors.length;
+};
+
+type LegacyCartItem = CartItem & {
+  selectedSize?: string;
+  selectedColor?: string;
+};
 
 export function useCart() {
   const [cart, setCart] = useState<CartItem[]>([]);
 
   // Carrega carrinho do localStorage
   useEffect(() => {
-    const saved = localStorage.getItem('shopping-cart');
+    const saved = localStorage.getItem("shopping-cart");
     if (saved) {
-      setCart(JSON.parse(saved));
+      const parsed = JSON.parse(saved) as LegacyCartItem[];
+
+      setCart(
+        parsed.map((item) => ({
+          ...item,
+          selectedSizes: Array.isArray(item.selectedSizes)
+            ? item.selectedSizes
+            : item.selectedSize
+              ? [item.selectedSize]
+              : [],
+          selectedColors: Array.isArray(item.selectedColors)
+            ? item.selectedColors
+            : item.selectedColor
+              ? [item.selectedColor]
+              : [],
+        })),
+      );
     }
   }, []);
 
   // Salva carrinho no localStorage
   useEffect(() => {
-    localStorage.setItem('shopping-cart', JSON.stringify(cart));
+    localStorage.setItem("shopping-cart", JSON.stringify(cart));
   }, [cart]);
 
   // Adiciona item ao carrinho
-  const addToCart = (product: Product, size: string, color: string) => {
+  const addToCart = (product: Product, sizes: string[], colors: string[]) => {
     setCart((prev) => {
-      // Verifica se já existe
+      const normalizedSizes = [...new Set(sizes)];
+      const normalizedColors = [...new Set(colors)];
+      const selectionQuantity = getSelectionQuantity(
+        normalizedSizes,
+        normalizedColors,
+      );
+
       const existingIndex = prev.findIndex(
         (item) =>
           item.product.id === product.id &&
-          item.selectedSize === size &&
-          item.selectedColor === color
+          areSameSelections(item.selectedSizes, normalizedSizes) &&
+          areSameSelections(item.selectedColors, normalizedColors),
       );
 
       if (existingIndex >= 0) {
-        // Incrementa quantidade
         const updated = [...prev];
-        updated[existingIndex].quantity += 1;
+        updated[existingIndex].quantity += selectionQuantity;
         return updated;
       }
 
-      // Adiciona novo
-      return [...prev, { product, selectedSize: size, selectedColor: color, quantity: 1 }];
+      return [
+        ...prev,
+        {
+          product,
+          selectedSizes: normalizedSizes,
+          selectedColors: normalizedColors,
+          quantity: selectionQuantity,
+        },
+      ];
     });
   };
 
@@ -64,7 +109,7 @@ export function useCart() {
   // Total em reais
   const totalPrice = cart.reduce(
     (sum, item) => sum + item.product.price * item.quantity,
-    0
+    0,
   );
 
   return {
